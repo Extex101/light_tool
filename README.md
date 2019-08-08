@@ -9,6 +9,6 @@ Here's how it works
 
 The beam is obstructed by blocks and go through glass and other nodes (with sunlight_propagates = true)
 
-Minetest forumn topic ![here]()
+Minetest forumn topic ![here](https://forum.minetest.net/viewtopic.php?f=9&t=23031&p=354005#p354005)
 
 
