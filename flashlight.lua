@@ -1,5 +1,5 @@
 
-local flashlight_max_charge = 300
+local flashlight_max_charge = 30000
 
 local S = technic.getter
 
