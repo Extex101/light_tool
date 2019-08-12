@@ -73,8 +73,7 @@ light_tool.register_glow_node = function(name)
 end
 
 light_tool.falling_node_check = function(pos, dist)
-	return false --function is currently unstable
-	--[[
+	--return false --function is currently unstable
 	local objects = minetest.get_objects_inside_radius(pos, dist)
 	for i, ob in pairs(objects) do
 		local en = ob:get_luaentity()
@@ -83,7 +82,7 @@ light_tool.falling_node_check = function(pos, dist)
 		end
 	end
 	return false
-	--]]
+	--
 end
 
 light_tool.check = function(table, value)
