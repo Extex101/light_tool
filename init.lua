@@ -5,25 +5,24 @@ dofile(path.."/api.lua")
 minetest.register_tool("light_tool:light_tool", {
 	description = "Light Tool",
 	inventory_image = "light_tool_light_tool.png",
+	liquids_pointable = true,
 })
 light_tool.add_tool("light_tool:light_tool", 20)
 
 minetest.register_node("light_tool:light", {
-	drawtype = "glasslike",
+	drawtype = "airlike",
 	tiles = {"blank.png"},
 	paramtype = "light",
 	walkable = false,
-	is_ground_content = true,
-	light_propagates = true,
 	sunlight_propagates = true,
 	light_source = 8,
 	pointable = false,
 	buildable_to = true, 
-    on_construct = function(pos)
+	on_construct = function(pos)
 		minetest.after(0.1, function()
-	        minetest.set_node(pos, {name = "air"})
-	    end)
-    end,
+			minetest.set_node(pos, {name = "air"})
+		end)
+	end,
 })
 
 minetest.register_lbm({
@@ -36,6 +35,11 @@ minetest.register_lbm({
 })
 
 if minetest.get_modpath("default") then
+	light_tool.register_glow_node("default:water_source")
+	light_tool.register_glow_node("default:water_flowing")
+	light_tool.register_glow_node("default:river_water_source")
+	light_tool.register_glow_node("default:river_water_flowing")
+	
 	minetest.register_craft({
 		output = "light_tool:light_tool",
 		recipe = {
