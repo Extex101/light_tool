@@ -1,3 +1,0 @@
-When holding a Light Tool it adds an aimed beam of light that is obstructed by blocks and shine through glass
-Great for night travel and mining situations
-Light Tool also adds an api to make your own light tools and create beams of light for own mods
