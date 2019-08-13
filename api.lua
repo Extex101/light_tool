@@ -9,17 +9,13 @@ light_tool.lightable_nodes = {}
 light_tool.lit_nodes = {}
 light_tool.light_beam = function(pos, dir, range)
 	for i = 0, range do
-        local new_pos = {
-           x = pos.x + (dir.x * i),
-           y = pos.y  + (dir.y * i),
-           z = pos.z + (dir.z * i),
-        }
+        local new_pos = light_tool.directional_pos(pos, dir, i)
 		local node = minetest.get_node(new_pos)
 		
 		
 		local lightable = light_tool.check(light_tool.lightable_nodes, node.name)
-		local lightable_index = light_tool.check(light_tool.lightable_nodes, node.name)
-		local lit = light_tool.lit_nodes[lightable_index]
+		local lightable_index = light_tool.check_index(light_tool.lightable_nodes, node.name)
+		local lit = light_tool.check(light_tool.lit_nodes, node.name)
         if node.name == "air" or node.name == "light_tool:light" then
 	        minetest.set_node(new_pos, {name = "light_tool:light"})
         elseif lightable or node.name == lit then
@@ -27,10 +23,10 @@ light_tool.light_beam = function(pos, dir, range)
 	        local index = light_tool.check_index(light_tool.lightable_nodes, node.name)
 	        minetest.set_node(new_pos, {name = light_tool.lightable_nodes[index].."_glowing"})
 	        
-        elseif minetest.registered_nodes[node.name].sunlight_propagates == false and not lightable and not node.name==lit then
+        elseif minetest.registered_nodes[node.name].sunlight_propagates == false and not lightable and not lit then
 			break
 		end
-		
+		minetest.chat_send_all(tostring (lightable)..", "..tostring (lit))
      end
 end
 
@@ -71,7 +67,16 @@ light_tool.register_glow_node = function(name)
 	table.insert(light_tool.lightable_nodes, name)
 	table.insert(light_tool.lit_nodes, name.."_glowing")
 end
-
+light_tool.directional_pos = function(pos, direction, multiplier, addition)
+	if addition == nil then
+		addition = 0
+	end
+	return vector.floor({
+		x = pos.x + (direction.x * multiplier+addition),
+		y = pos.y  + (direction.y * multiplier+addition),
+        z = pos.z + (direction.z * multiplier+addition),
+	})
+end
 light_tool.falling_node_check = function(pos, dist)
 	--return false --function is currently unstable
 	local objects = minetest.get_objects_inside_radius(pos, dist)
