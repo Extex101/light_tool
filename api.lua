@@ -26,7 +26,6 @@ light_tool.light_beam = function(pos, dir, range)
         elseif minetest.registered_nodes[node.name].sunlight_propagates == false and not lightable and not lit then
 			break
 		end
-		minetest.chat_send_all(tostring (lightable)..", "..tostring (lit))
      end
 end
 
