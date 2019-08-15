@@ -8,24 +8,39 @@ light_tool.range = {}
 light_tool.lightable_nodes = {}
 light_tool.lit_nodes = {}
 light_tool.light_beam = function(pos, dir, range)
-	for i = 0, range do
+	for i = 0, range,1 do
         local new_pos = light_tool.directional_pos(pos, dir, i)
+        local xold_pos = light_tool.directional_pos(pos, dir, i-2)
+        local old_pos = light_tool.directional_pos(pos, dir, i-1)
+        
 		local node = minetest.get_node(new_pos)
+		local old_node = minetest.get_node(old_pos)
+		local xold_node = minetest.get_node(xold_pos)
 		
 		
 		local lightable = light_tool.check(light_tool.lightable_nodes, node.name)
 		local lightable_index = light_tool.check_index(light_tool.lightable_nodes, node.name)
 		local lit = light_tool.check(light_tool.lit_nodes, node.name)
-        if node.name == "air" or node.name == "light_tool:light" then
-	        minetest.set_node(new_pos, {name = "light_tool:light"})
-        elseif lightable or node.name == lit then
+		if node.name == "air" or node.name == "light_tool:light"then
+			if i == 1 then
+				minetest.set_node(new_pos, {name = "light_tool:light"})
+			end
+        elseif lightable then
 	        
-	        local index = light_tool.check_index(light_tool.lightable_nodes, node.name)
-	        minetest.set_node(new_pos, {name = light_tool.lightable_nodes[index].."_glowing"})
+	        local name = light_tool.lightable_nodes[lightable_index].."_glowing"
+			
+	        minetest.set_node(new_pos, {name = name})
 	        
         elseif minetest.registered_nodes[node.name].sunlight_propagates == false and not lightable and not lit then
+	        if old_node.name == "air" or old_node.name == "light_tool:light" then
+		        minetest.set_node(old_pos, {name = "light_tool:light"})
+			end
+			if xold_node.name == "air" or xold_node.name == "light_tool:light" then
+		        minetest.set_node(xold_pos, {name = "light_tool:light"})
+			end
 			break
 		end
+		--minetest.chat_send_all(tostring (lightable)..", "..tostring (lit))
      end
 end
 
@@ -105,4 +120,5 @@ light_tool.check_index = function(table, value)
 			return i
 		end
 	end
+	return false
 end
