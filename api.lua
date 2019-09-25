@@ -23,7 +23,7 @@ light_tool.light_beam = function(pos, dir, range)
 	        local index = light_tool.check_index(light_tool.lightable_nodes, node.name)
 	        minetest.set_node(new_pos, {name = light_tool.lightable_nodes[index].."_glowing"})
 	        
-        elseif minetest.registered_nodes[node.name].sunlight_propagates == false and not lightable and not lit then
+        elseif node.name and minetest.registered_nodes[node.name].sunlight_propagates == false and not lightable and not lit then
 			break
 		end
      end
