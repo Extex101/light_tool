@@ -1,4 +1,5 @@
-local path = minetest.get_modpath("light_tool")
+local name = minetest.get_current_mod_name()
+local path = minetest.get_modpath(name)
 
 dofile(path.."/api.lua")
 
