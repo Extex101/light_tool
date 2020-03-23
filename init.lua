@@ -48,16 +48,17 @@ if minetest.get_modpath("default") then
 			{"default:steel_ingot", "default:mese_crystal_fragment",""},
 		},
 	})
-end
-if minetest.get_modpath("mcl_core") then
+elseif minetest.get_modpath("mcl_core") then
 	light_tool.register_glow_node("mcl_core:water_source")
 	light_tool.register_glow_node("mcl_core:water_flowing")
+	light_tool.register_glow_node("mclx_core:river_water_source")
+	light_tool.register_glow_node("mclx_core:river_water_flowing")
 	minetest.register_craft({
 		output = "light_tool:light_tool",
 		recipe = {
-			{"","mcl_mobitems:blaze_rod","mcl_nether:glowstone"},
-			{"mcl_mobitems:blaze_rod","mcl_core:steel_ingot","mcl_mobitems:blaze_rod"},
-			{"mcl_core:steel_ingot", "mcl_mobitems:blaze_rod",""},
+			{"","mobs_mc:blaze_rod","mcl_nether:glowstone"},
+			{"mobs_mc:blaze_rod","mcl_core:steel_ingot","mobs_mc:blaze_rod"},
+			{"mcl_core:steel_ingot", "mobs_mc:blaze_rod",""},
 		},
 	})
 end
