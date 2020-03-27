@@ -1,4 +1,4 @@
-local name = minetest.get_current_mod_name()
+local name = minetest.get_current_modname()
 local path = minetest.get_modpath(name)
 
 dofile(path.."/api.lua")
