@@ -8,11 +8,13 @@ light_tool.range = {}
 light_tool.lightable_nodes = {}
 light_tool.lit_nodes = {}
 light_tool.light_beam = function(pos, dir, range)
-	for i = 0, range do
-        local new_pos = light_tool.directional_pos(pos, dir, i)
+	-- Normalize dir to have longest component == 1.
+	local normalized_dir = vector.divide(dir, math.max(math.abs(dir.x), math.abs(dir.y), math.abs(dir.z), 0.01))
+
+	for i = 0, math.floor(range / vector.length(normalized_dir)) do
+		local new_pos = vector.add(pos, vector.multiply(normalized_dir, i))
+
 		local node = minetest.get_node(new_pos)
-		
-		
 		local lightable = light_tool.check(light_tool.lightable_nodes, node.name)
 		local lightable_index = light_tool.check_index(light_tool.lightable_nodes, node.name)
 		local lit = light_tool.check(light_tool.lit_nodes, node.name)
