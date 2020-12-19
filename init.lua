@@ -9,6 +9,9 @@ minetest.register_tool("light_tool:light_tool", {
 })
 light_tool.add_tool("light_tool:light_tool", 20)
 
+-- This is a temporary light source which forms the light beam of a flashlight.
+-- When you constructed it, call minetest.get_node_timer(pos):start(lifetime) to make it delete itself.
+-- Call start() again to extend the lifetime.
 minetest.register_node("light_tool:light", {
 	drawtype = "airlike",
 	tiles = {"blank.png"},

@@ -21,7 +21,6 @@ light_tool.light_beam = function(pos, dir, range)
 			-- Place temporary light nodes in air:
 			minetest.set_node(new_pos, {name = "light_tool:light"})
 			minetest.get_node_timer(new_pos):start(0.2)
-			light_positions[i] = new_pos
 		elseif node.name == "light_tool:light" then
 			-- Reset destruction timer for this light node:
 			minetest.get_node_timer(new_pos):start(0.2)
