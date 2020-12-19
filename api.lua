@@ -14,7 +14,6 @@ light_tool.light_beam = function(pos, dir, range)
 		
 		
 		local lightable = light_tool.check(light_tool.lightable_nodes, node.name)
-		local lightable_index = light_tool.check_index(light_tool.lightable_nodes, node.name)
 		local lit = light_tool.check(light_tool.lit_nodes, node.name)
 
 		if node.name == "air" then
@@ -22,13 +21,16 @@ light_tool.light_beam = function(pos, dir, range)
 			minetest.set_node(new_pos, {name = "light_tool:light"})
 			minetest.get_node_timer(new_pos):start(0.2)
 		elseif node.name == "light_tool:light" then
-			-- Reset destruction timer for this light node:
+			-- Extend lifetime for this light node:
 			minetest.get_node_timer(new_pos):start(0.2)
-        elseif lightable or node.name == lit then
-	        
-	        local index = light_tool.check_index(light_tool.lightable_nodes, node.name)
-	        minetest.set_node(new_pos, {name = light_tool.lightable_nodes[index].."_glowing"})
-	        
+        elseif lightable then
+			-- Place temporary glow node in lightable node:
+			local index = light_tool.check_index(light_tool.lightable_nodes, node.name)
+			minetest.set_node(new_pos, {name = light_tool.lightable_nodes[index].."_glowing"})
+			minetest.get_node_timer(new_pos):start(0.2)
+		elseif node.name == lit then
+			-- Extend lifetime for this glow node:
+			minetest.get_node_timer(new_pos):start(0.2)
         elseif node.name and minetest.registered_nodes[node.name].sunlight_propagates == false and not lightable and not lit then
 			break
 		end
@@ -49,17 +51,22 @@ light_tool.register_glow_node = function(name)
 		return
 	end
 	
+	-- The following creates a temporary light source definition, which forms the light beam of a flashlight.
+	-- When you constructed such nodes, call minetest.get_node_timer(pos):start(lifetime) to make it delete itself.
+	-- Call start() again to extend the lifetime.
 	local node = minetest.registered_nodes[name]
 	local def = table.copy(node)
 	
 	def.paramtype = "light"
 	def.light_source = 4
-	def.on_construct = function(pos)
-		minetest.after(0.1, function()
-	        minetest.set_node(pos, {name = name})
-	    end)
-    end
-    
+	def.on_timer = function(pos)
+		minetest.set_node(pos, {name = name})
+	end
+
+	minetest.register_node(":"..name.."_glowing", def)
+	table.insert(light_tool.lightable_nodes, name)
+	table.insert(light_tool.lit_nodes, name.."_glowing")
+
 	minetest.register_lbm({
 		name = ":"..name.."_glowing_removal",
 		nodenames = {name.."_glowing"},
@@ -68,9 +75,6 @@ light_tool.register_glow_node = function(name)
 			minetest.set_node(pos, {name = name})
 		end,
 	})
-	minetest.register_node(":"..name.."_glowing", def)
-	table.insert(light_tool.lightable_nodes, name)
-	table.insert(light_tool.lit_nodes, name.."_glowing")
 end
 light_tool.directional_pos = function(pos, direction, multiplier, addition)
 	if addition == nil then
