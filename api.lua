@@ -16,8 +16,15 @@ light_tool.light_beam = function(pos, dir, range)
 		local lightable = light_tool.check(light_tool.lightable_nodes, node.name)
 		local lightable_index = light_tool.check_index(light_tool.lightable_nodes, node.name)
 		local lit = light_tool.check(light_tool.lit_nodes, node.name)
-        if node.name == "air" or node.name == "light_tool:light" then
-	        minetest.set_node(new_pos, {name = "light_tool:light"})
+
+		if node.name == "air" then
+			-- Place temporary light nodes in air:
+			minetest.set_node(new_pos, {name = "light_tool:light"})
+			minetest.get_node_timer(new_pos):start(0.2)
+			light_positions[i] = new_pos
+		elseif node.name == "light_tool:light" then
+			-- Reset destruction timer for this light node:
+			minetest.get_node_timer(new_pos):start(0.2)
         elseif lightable or node.name == lit then
 	        
 	        local index = light_tool.check_index(light_tool.lightable_nodes, node.name)

@@ -18,10 +18,8 @@ minetest.register_node("light_tool:light", {
 	light_source = 8,
 	pointable = false,
 	buildable_to = true, 
-	on_construct = function(pos)
-		minetest.after(0.1, function()
-			minetest.set_node(pos, {name = "air"})
-		end)
+	on_timer = function(pos)
+		minetest.set_node(pos, {name = "air"})
 	end,
 })
 
