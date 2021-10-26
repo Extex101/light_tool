@@ -10,25 +10,30 @@ light_tool.lit_nodes = {}
 light_tool.light_beam = function(pos, dir, range)
 	-- Normalize dir to have longest component == 1.
 	local normalized_dir = vector.divide(dir, math.max(math.abs(dir.x), math.abs(dir.y), math.abs(dir.z), 0.01))
-
+	
 	for i = 0, math.floor(range / vector.length(normalized_dir)) do
 		local new_pos = vector.add(pos, vector.multiply(normalized_dir, i))
-
-		local node = minetest.get_node(new_pos)
+		
+		local node = minetest.get_node_or_nil(new_pos)
+		if not node or not node.name then 
+			return 
+		end
+		local def = minetest.registered_nodes[node.name]
+		if not def then return end
 		local lightable = light_tool.check(light_tool.lightable_nodes, node.name)
 		local lightable_index = light_tool.check_index(light_tool.lightable_nodes, node.name)
 		local lit = light_tool.check(light_tool.lit_nodes, node.name)
-        if node.name == "air" or node.name == "light_tool:light" then
-	        minetest.set_node(new_pos, {name = "light_tool:light"})
-        elseif lightable or node.name == lit then
-	        
-	        local index = light_tool.check_index(light_tool.lightable_nodes, node.name)
-	        minetest.set_node(new_pos, {name = light_tool.lightable_nodes[index].."_glowing"})
-	        
-        elseif node.name and minetest.registered_nodes[node.name].sunlight_propagates == false and not lightable and not lit then
+		if node.name == "air" or node.name == "light_tool:light" then
+			minetest.set_node(new_pos, {name = "light_tool:light"})
+		elseif lightable or node.name == lit then
+			
+			local index = light_tool.check_index(light_tool.lightable_nodes, node.name)
+			minetest.set_node(new_pos, {name = light_tool.lightable_nodes[index].."_glowing"})
+			
+		elseif def and def.sunlight_propagates == false and not lightable and not lit then
 			break
 		end
-     end
+	end
 end
 
 light_tool.add_tool = function(toolname, range)
